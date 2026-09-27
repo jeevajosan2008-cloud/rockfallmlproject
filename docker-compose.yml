@@ -1,0 +1,26 @@
+version: '3.8'
+
+services:
+  # FastAPI REST API + Modern HTML5 Frontend
+  api-backend:
+    build: .
+    container_name: rockfall_api_backend
+    restart: always
+    ports:
+      - "8000:8000"
+    command: uvicorn backend.main:app --host 0.0.0.0 --port 8000
+    environment:
+      - PYTHONUNBUFFERED=1
+
+  # Streamlit Geotechnical Dashboard
+  streamlit-frontend:
+    build: .
+    container_name: rockfall_streamlit_frontend
+    restart: always
+    ports:
+      - "8501:8501"
+    command: streamlit run app.py --server.port=8501 --server.address=0.0.0.0
+    environment:
+      - PYTHONUNBUFFERED=1
+    depends_on:
+      - api-backend
